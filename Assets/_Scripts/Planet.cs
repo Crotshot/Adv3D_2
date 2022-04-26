@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Planet : MonoBehaviour {
-    float rotationalSpeed = 10f, orbitalSpeed = .20f,orbitalAngle = 0.0f,angle = 0.0f,orbitalRotationalSpeed = 20f, distanceToSun = 150;
-    Color c1 = Color.blue;
+    public float afterDistance, afterRotationalPeriod, afterOrbitalVelocity, orbitalAngle = 0.0f;
     int lengthOfLineRenderer = 100;
-
-    GameObject sun;
+    public bool setup = false;
+    Color c1 = Color.blue;
+    public PlanetGenerator sun;
+    
     void DrawOrbit() {
         LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
@@ -22,31 +23,34 @@ public class Planet : MonoBehaviour {
             float unitAngle = (float)(2 * 3.14) / lengthOfLineRenderer;
             float currentAngle = (float)unitAngle * i;
 
-            Vector3 pos = new Vector3(distanceToSun * Mathf.Cos(currentAngle), 0, distanceToSun * Mathf.Sin(currentAngle));
+            Vector3 pos = new Vector3(afterDistance * Mathf.Cos(currentAngle), 0, afterDistance * Mathf.Sin(currentAngle));
             lineRenderer.SetPosition(i, pos);
             i++;
         }
     }
 
-    void Start() {
-        sun = GameObject.Find("Sun");
-        transform.position = new Vector3(distanceToSun, 0, distanceToSun);
-        DrawOrbit();
-
-    }
-
     void Update() {
-        transform.Rotate(Vector3.up, rotationalSpeed * Time.deltaTime, Space.World);
+        if (!setup)
+            return;
+        transform.Rotate(Vector3.up, afterRotationalPeriod * Time.deltaTime, Space.World);
         float tempx, tempy, tempz;
-        orbitalAngle += Time.deltaTime * orbitalSpeed;
-        tempx = sun.transform.position.x + distanceToSun * Mathf.Cos(orbitalAngle);
-        tempz = sun.transform.position.z + distanceToSun * Mathf.Sin(orbitalAngle);
+        orbitalAngle += Time.deltaTime * afterOrbitalVelocity;
+        tempx = sun.transform.position.x + afterDistance * Mathf.Cos(orbitalAngle);
+        tempz = sun.transform.position.z + afterDistance * Mathf.Sin(orbitalAngle);
         tempy = sun.transform.position.y;
         transform.position = new Vector3(tempx, tempy, tempz);
     }
 
 
-    public void SetupPlanet(float diameter, float distance, float rotationalPeriod, float orbitalVelocity) {
+    public void SetupPlanet(float diameter, float distance, float rotationalPeriod, float orbitalVelocity, PlanetGenerator s) {
+        sun = s;
+        transform.localScale = Vector3.one * diameter * sun.baseDiameter;
+        afterDistance = distance * sun.baseDistanceToSun;
+        afterRotationalPeriod = rotationalPeriod * sun.baseOrbitalRotationalSpeed;
+        afterOrbitalVelocity = orbitalVelocity * sun.baseOrbitalSpeed;
+        transform.position = new Vector3(afterDistance, 0, afterDistance);
+        //DrawOrbit();
 
+        setup = true;
     }
 }
