@@ -1,0 +1,9 @@
+<game>
+<script/>
+<level number="1">
+<object name="wall1" color="red" location="10,0,10" rotation="0,0,0" scale="1,2,1"> </object>
+</level>
+<level number="2">
+<object name="wall2" color="red" location="20,0,10" rotation="0,0,0" scale="1,2,1"> </object>
+</level>
+</game>
