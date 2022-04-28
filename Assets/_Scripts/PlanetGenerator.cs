@@ -4,15 +4,11 @@ using UnityEngine;
 using System.Xml;//added
 
 public class PlanetGenerator : MonoBehaviour {
-    [SerializeField] public float baseOrbitalSpeed = .20f, baseOrbitalRotationalSpeed = 20f, baseDistanceToSun = 150, baseDiameter = 10f;
-    [SerializeField] GameObject planetPrefab;
+    [SerializeField] public float baseOrbitalSpeed = .20f, baseOrbitalRotationalSpeed = 20f, baseDistanceToSun = 150, baseDiameter = 10f, baseDistanceFromSurface = 2f;
+    [SerializeField] GameObject planetPrefab, collectablePrefab;
 
     void Start()
     {
-        PlanetsFromXML();
-    }
-
-    void PlanetsFromXML() {
         TextAsset textAsset = (TextAsset)Resources.Load("planets");
         XmlDocument doc = new XmlDocument();
         doc.LoadXml(textAsset.text);
@@ -23,12 +19,26 @@ public class PlanetGenerator : MonoBehaviour {
             distancetoSun = StringToFloat(planet.Attributes.GetNamedItem("distancetoSun").Value),
             rotationPeriod = StringToFloat(planet.Attributes.GetNamedItem("rotationPeriod").Value),
             orbitalVelocity = StringToFloat(planet.Attributes.GetNamedItem("orbitalVelocity").Value);
-            //print("Planet Name:" + planetName + ", Normalised Distance: " + distancetoSun + ", Normalised Rotational Period: " + rotationPeriod + ", Normalised Orbital Velocity" + orbitalVelocity);
+            Debug.Log("Planet Name:" + planetName + ", Normalised Distance: " + distancetoSun + ", Normalised Rotational Period: " + rotationPeriod + ", Normalised Orbital Velocity" + orbitalVelocity);
 
             GameObject obj = Instantiate(planetPrefab, transform);
             obj.name = planetName;
-            obj.GetComponent<Planet>().SetupPlanet(diameter, distancetoSun, rotationPeriod, orbitalVelocity, this);
+            obj.GetComponent<Planet>().SetupOrbitingBody(diameter, distancetoSun, rotationPeriod, orbitalVelocity, transform);
         }
+
+        foreach (XmlNode collectable in doc.SelectNodes("Data/collectables/collectable")) {
+            string orbitingPlanet = collectable.Attributes.GetNamedItem("location").Value;
+            float surfaceDistance = StringToFloat(collectable.Attributes.GetNamedItem("distanceFromSurface").Value),
+            rotationPeriod = StringToFloat(collectable.Attributes.GetNamedItem("rotationPeriod").Value),
+            orbitalVelocity = StringToFloat(collectable.Attributes.GetNamedItem("orbitalVelocity").Value);
+            Debug.Log("Collectable Location :" + orbitingPlanet + ", Normalised Surface Distance: " + surfaceDistance + ", Normalised Rotational Period: " + rotationPeriod + ", Normalised Orbital Velocity" + orbitalVelocity);
+
+            GameObject obj = Instantiate(collectablePrefab, transform.position, Quaternion.identity);
+            obj.GetComponent<BoxCollider>().size = Vector3.one * 3;
+            obj.AddComponent<Moon>().SetupMoon(orbitingPlanet, surfaceDistance, rotationPeriod, orbitalVelocity);
+        }
+
+        FindObjectOfType<Level>().Setup();
     }
 
     float StringToFloat(string s) {

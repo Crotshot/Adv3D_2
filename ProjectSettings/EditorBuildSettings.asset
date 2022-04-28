@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/_Preload.unity
     guid: 1108f8332f5ce1247a6bfe870cc4379e
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: f2927e4111d65bb46910c419a11a13fc
-  - enabled: 1
     path: Assets/Scenes/Maze.unity
     guid: 1cb3851e5d276014e8883183ecf0c51c
   - enabled: 1
@@ -23,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EndScreen.unity
     guid: 88a50febfe0298b458ed7f011e25902a
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: f2927e4111d65bb46910c419a11a13fc
   m_configObjects: {}

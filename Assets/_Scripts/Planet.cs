@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Planet : MonoBehaviour {
-    public float afterDistance, afterRotationalPeriod, afterOrbitalVelocity, orbitalAngle = 0.0f;
-    int lengthOfLineRenderer = 100;
-    public bool setup = false;
-    Color c1 = Color.blue;
-    public PlanetGenerator sun;
+public class Planet : OrbitingBody {
     
+}
+
+/*
+    Color c1 = Color.blue
+    int lengthOfLineRenderer = 100;
+
     void DrawOrbit() {
         LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
@@ -28,29 +29,4 @@ public class Planet : MonoBehaviour {
             i++;
         }
     }
-
-    void Update() {
-        if (!setup)
-            return;
-        transform.Rotate(Vector3.up, afterRotationalPeriod * Time.deltaTime, Space.World);
-        float tempx, tempy, tempz;
-        orbitalAngle += Time.deltaTime * afterOrbitalVelocity;
-        tempx = sun.transform.position.x + afterDistance * Mathf.Cos(orbitalAngle);
-        tempz = sun.transform.position.z + afterDistance * Mathf.Sin(orbitalAngle);
-        tempy = sun.transform.position.y;
-        transform.position = new Vector3(tempx, tempy, tempz);
-    }
-
-
-    public void SetupPlanet(float diameter, float distance, float rotationalPeriod, float orbitalVelocity, PlanetGenerator s) {
-        sun = s;
-        transform.localScale = Vector3.one * diameter * sun.baseDiameter;
-        afterDistance = distance * sun.baseDistanceToSun;
-        afterRotationalPeriod = rotationalPeriod * sun.baseOrbitalRotationalSpeed;
-        afterOrbitalVelocity = orbitalVelocity * sun.baseOrbitalSpeed;
-        transform.position = new Vector3(afterDistance, 0, afterDistance);
-        //DrawOrbit();
-
-        setup = true;
-    }
-}
+*/

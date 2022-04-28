@@ -26,7 +26,7 @@ public class MainMenu : MonoBehaviour {
 
     #region Menu
     public void OnBeginClicked() {
-        gM.LoadScene(2);
+        gM.LoadScene(1);
     }
 
     public void LogOut() {

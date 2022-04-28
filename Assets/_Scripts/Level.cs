@@ -12,42 +12,58 @@ public class Level : MonoBehaviour {
     float time = 0f, score = 0f;
     List<Collectable> collectables;
     string m = "00", s = "00";
+    public bool scriptSetup;
 
     private void Start() {
+        if (!scriptSetup) {
+            Setup();
+        }
+    }
+    List<Transform> collectiblePositions;
+    public void Setup() {
         collectables = new List<Collectable>();
 
-        List<Transform> collectiblePositions = new List<Transform>();
-        foreach (GameObject g in GameObject.FindGameObjectsWithTag("CollectablePosition")) {
-            collectiblePositions.Add(g.transform);
+        if (!scriptSetup) {
+            collectiblePositions = new List<Transform>();
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("CollectablePosition")) {
+                collectiblePositions.Add(g.transform);
+            }
         }
 
         foreach (Collectable c in FindObjectsOfType<Collectable>()) {
             collectables.Add(c);
-            Transform t = collectiblePositions[Random.Range(0, collectiblePositions.Count)];
-            c.transform.position = t.position;
-            c.transform.rotation= t.rotation;
-            if (t.parent != null){
-                c.transform.parent = t.parent;
+            if (!scriptSetup) {
+                Transform t = collectiblePositions[Random.Range(0, collectiblePositions.Count)];
+                c.transform.position = t.position;
+                c.transform.rotation = t.rotation;
+                if (t.parent != null) {
+                    c.transform.parent = t.parent;
+                }
+                collectiblePositions.Remove(t);
+                Destroy(t.gameObject);
             }
-            collectiblePositions.Remove(t);
-            Destroy(t.gameObject);
         }
 
-        for (int i = collectiblePositions.Count -1; i > -1; i--) {
-            Destroy(collectiblePositions[i].gameObject);
-            collectiblePositions.Remove(collectiblePositions[i]);
+        if (!scriptSetup) {
+            for (int i = collectiblePositions.Count - 1; i > -1; i--) {
+                Destroy(collectiblePositions[i].gameObject);
+                collectiblePositions.Remove(collectiblePositions[i]);
+            }
         }
-
         
+
+
         parBonusText.text = parBonus.ToString("f0");
 
 
         m = "00";
-        if ((int)parTime / 60 != 0)
+        if ((int)parTime % 60 < 10)
+            m = "0" + ((int)parTime / 60).ToString("f0");
+        else
             m = ((int)parTime / 60).ToString("f0");
 
         s = "00";
-        if ((int)parTime % 60 != 0 && (int)parTime % 60 < 10)
+        if (/*(int)parTime % 60 != 0 && */(int)parTime % 60 < 10)
             s = "0" + ((int)parTime % 60).ToString("f0");
         else
             s = ((int)parTime % 60).ToString("f0");
@@ -56,7 +72,6 @@ public class Level : MonoBehaviour {
         remainingText.text = collectables.Count.ToString();
     }
 
-    
     private void Update() {
         if (Time.timeScale == 0)
             return;
