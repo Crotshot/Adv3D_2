@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class MainMenu : MonoBehaviour {
-
     GameManager gM;
-    [SerializeField] GameObject menuPanel, logInPanel;
+    [SerializeField] GameObject menuPanel, logInPanel, loadLevelButton;
     [SerializeField] TMP_Text highScore, fastestTime, user;
     [SerializeField] TMP_InputField username, passsword;
+    int savedLevel = -1;
     Logger l;
 
     private void Start() {
@@ -21,8 +21,10 @@ public class MainMenu : MonoBehaviour {
             menuPanel.SetActive(false);
         }
         else {
+            user.text = PlayerPrefs.GetString("Current_User");
             StartCoroutine(GrabScore());
             StartCoroutine(GrabTime());
+            StartCoroutine(GrabLevel());
             logInPanel.SetActive(false);
             menuPanel.SetActive(true);
         }
@@ -69,6 +71,7 @@ public class MainMenu : MonoBehaviour {
             menuPanel.SetActive(true);
             StartCoroutine(GrabScore());
             StartCoroutine(GrabTime());
+            StartCoroutine(GrabLevel());
         }
         else {
             logInPanel.SetActive(true);
@@ -97,7 +100,35 @@ public class MainMenu : MonoBehaviour {
         l.Log(result);
 
         if (!result.Contains("Error")) {
-            fastestTime.text = result;
+            int t = int.Parse(result);
+            string m, s;
+            m = "00";
+            if (t % 60 < 10)
+                m = "0" + (t / 60).ToString("f0");
+            else
+                m = (t / 60).ToString("f0");
+
+            s = "00";
+            if (/*t % 60 != 0 && */t % 60 < 10)
+                s = "0" + (t % 60).ToString("f0");
+            else
+                s = (t % 60).ToString("f0");
+
+            fastestTime.text = m + ":" + s;
+        }
+    }
+
+    IEnumerator GrabLevel() {
+        string url = "https://adv3dassignment2db.000webhostapp.com/AccessLevel.php";
+        url += "?username=" + user.text;
+        WWW www = new WWW(url);
+        yield return www;
+        string result = www.text;
+        l.Log(result);
+
+        if (!result.Contains("Error")) {
+            savedLevel = int.Parse(result);
+            loadLevelButton.SetActive(true);
         }
     }
     #endregion
@@ -130,5 +161,9 @@ public class MainMenu : MonoBehaviour {
 
     public void OnQuitClicked() {
         gM.QuitApplication();
+    }
+
+    public void OnLoadLevelPressed() {
+        gM.LoadScene(savedLevel);
     }
 }

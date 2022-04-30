@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour {
     [SerializeField] GameObject pauseCanvas;
     Inputs inputs;
+    GameManager gM;
 
     private void Start() {
         inputs = GetComponent<Inputs>();
+        gM = FindObjectOfType<GameManager>();
         pauseCanvas.SetActive(false);
         Time.timeScale = 1;
     }
@@ -27,8 +29,6 @@ public class Menu : MonoBehaviour {
     }
 
     public void OnMenuClicked() {
-        Time.timeScale = 1;
-        pauseCanvas.SetActive(false);
-        SceneManager.LoadScene("MainMenu");
+        gM.SaveLevelIndex();
     }
 }

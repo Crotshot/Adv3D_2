@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
             Destroy(w.gameObject); //If loaded from a scene and wrangled, go back to the scene with the new game manager
             LoadScene(PlayerPrefs.GetInt("SceneIndex"));
         }
-        else {//Else just load the LogIn Scene
+        else {//Else just load the LogIn/Menu Scene
             LoadScene(5);
         }
     }
@@ -39,4 +39,21 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.GetFloat("Lvl" + i + "_time")
             );
     }
+
+
+    public void SaveLevelIndex() {
+        StartCoroutine(UploadLevel());
+    }
+
+    IEnumerator UploadLevel() {
+        string url = "https://adv3dassignment2db.000webhostapp.com/UpdateLevel.php";
+        url += "?username=" + PlayerPrefs.GetString("Current_User") + "&level=" + SceneManager.GetActiveScene().buildIndex;
+        WWW www = new WWW(url);
+        yield return www;
+        string result = www.text;
+        print(result);
+        Time.timeScale = 1;
+        LoadScene(5);
+    }
+
 }
