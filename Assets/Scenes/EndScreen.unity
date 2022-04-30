@@ -2956,6 +2956,8 @@ MonoBehaviour:
   - {fileID: 486543838}
   - {fileID: 1443197156}
   - {fileID: 1826431797}
+  submitScore: {fileID: 1704938830}
+  returnToMenu: {fileID: 208500441}
 --- !u!1 &1443197156
 GameObject:
   m_ObjectHideFlags: 0

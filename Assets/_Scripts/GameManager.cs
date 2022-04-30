@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     private void Awake() {
         DontDestroyOnLoad(gameObject);
+        PlayerPrefs.SetString("Current_User", "NA");
 
         var w = FindObjectOfType<Wrangler>();
         if (w != null) {

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 
 public class Level : MonoBehaviour {
-
     [SerializeField] float parTime = 20f, scorePerCollectable = 100f, parBonus = 250f;
     [SerializeField] TMP_Text timeText, scoreText, parText, parBonusText, remainingText;
 
